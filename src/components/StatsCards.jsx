@@ -16,12 +16,28 @@ export default function StatsCards() {
 
   const stats = [
     {
+      label: 'Overall Registrations',
+      value: records.length,
+      icon: Users,
+      gradient: 'linear-gradient(135deg, #001f5b 0%, #003A8F 100%)',
+      shadow: 'rgba(0,31,91,0.25)',
+      sub: 'Total accounts opened',
+    },
+    {
+      label: 'This Month',
+      value: monthCount,
+      icon: CalendarCheck,
+      gradient: 'linear-gradient(135deg, #1565C0 0%, #1E88E5 100%)',
+      shadow: 'rgba(21,101,192,0.25)',
+      sub: now.toLocaleString('en-IN', { month: 'long', year: 'numeric' }),
+    },
+    {
       label: 'Today',
       value: todayCount,
       icon: TrendingUp,
       gradient: 'linear-gradient(135deg, #E31E24 0%, #ff5252 100%)',
       shadow: 'rgba(227,30,36,0.25)',
-      sub: 'New registrations',
+      sub: 'New submissions today',
     },
   ];
 
