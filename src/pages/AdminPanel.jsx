@@ -90,6 +90,8 @@ function EditModal({ record, onSave, onClose }) {
     { key: 'aadharNumber', label: 'Aadhar Number' },
     { key: 'accountNumber', label: 'Account Number' },
     { key: 'mobileNumber', label: 'Mobile Number' },
+    { key: 'nomineeName', label: 'Nominee Name' },
+    { key: 'nomineeAge', label: 'Nominee Age', type: 'number' },
   ];
 
   return (
@@ -120,14 +122,29 @@ function EditModal({ record, onSave, onClose }) {
           ))}
         </div>
         <div style={{ marginBottom: '20px' }}>
+          <label style={{ fontSize: '0.72rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>Schemes</label>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {[
+              { id: 'schemeApy', label: 'APY' },
+              { id: 'schemePmsby', label: 'PMSBY' },
+              { id: 'schemePmjjby', label: 'PMJJBY' },
+            ].map(s => (
+              <label key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', cursor: 'pointer', background: form[s.id] ? '#003A8F' : '#f1f5f9', color: form[s.id] ? '#fff' : '#64748b', padding: '6px 12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <input type="checkbox" checked={form[s.id] || false} onChange={e => set(s.id, e.target.checked)} style={{ display: 'none' }} />
+                {s.label}
+              </label>
+            ))}
+          </div>
+        </div>
+        <div style={{ marginBottom: '20px' }}>
           <label style={{ fontSize: '0.72rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Address</label>
           <textarea className="neu-input" rows={2} value={form.address || ''} onChange={e => set('address', e.target.value)} style={{ paddingLeft: '12px', resize: 'vertical' }} />
         </div>
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
           <button className="btn-outline" onClick={onClose}>Cancel</button>
           <button className="btn-primary" onClick={() => {
-            if (!form.customerName || !form.aadharNumber || !form.customerId) {
-              toast.error('Name, Aadhar, and Customer ID are required.');
+            if (!form.customerName || !form.aadharNumber || !form.customerId || !form.nomineeName || !form.nomineeAge) {
+              toast.error('Name, Aadhar, Customer ID, and Nominee details are required.');
               return;
             }
             onSave(form);
@@ -433,6 +450,11 @@ export default function AdminPanel() {
       'Account Number':  r.accountNumber,
       'Mobile':          r.mobileNumber,
       'Address':         r.address,
+      'Nominee Name':    r.nomineeName,
+      'Nominee Age':     r.nomineeAge,
+      'APY':             r.schemeApy ? 'YES' : 'NO',
+      'PMSBY':           r.schemePmsby ? 'YES' : 'NO',
+      'PMJJBY':          r.schemePmjjby ? 'YES' : 'NO',
       'Registered At':   new Date(r.createdAt).toLocaleString('en-IN'),
     }));
     const ws = XLSX.utils.json_to_sheet(data);
@@ -621,7 +643,8 @@ export default function AdminPanel() {
                           <th>Account No</th>
                           <th>Mobile</th>
                           <th>Address</th>
-                          <th>Photo</th>
+                          <th>Nominee</th>
+                          <th>Schemes</th>
                           <th style={{ textAlign: 'center' }}>Actions</th>
                         </tr>
                       </thead>
@@ -640,10 +663,17 @@ export default function AdminPanel() {
                             <td style={{ fontSize: '0.8rem' }}>{r.accountNumber}</td>
                             <td style={{ fontSize: '0.8rem' }}>{r.mobileNumber}</td>
                             <td style={{ fontSize: '0.78rem', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={r.address}>{r.address}</td>
-                            <td>
-                              {r.photo?.dataUrl ? (
-                                <img src={r.photo.dataUrl} alt="Photo" style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '8px', border: '1.5px solid #003A8F' }} />
-                              ) : <span style={{ color: '#cbd5e1', fontSize: '0.72rem' }}>None</span>}
+                            <td style={{ fontSize: '0.78rem' }}>
+                              <div style={{ fontWeight: 600 }}>{r.nomineeName}</div>
+                              <div style={{ fontSize: '0.7rem', color: '#64748b' }}>Age: {r.nomineeAge}</div>
+                            </td>
+                            <td style={{ fontSize: '0.75rem' }}>
+                              <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                                {r.schemeApy && <span className="badge" style={{ background: '#dcfce7', color: '#166534' }}>APY</span>}
+                                {r.schemePmsby && <span className="badge" style={{ background: '#fef9c3', color: '#854d0e' }}>PMSBY</span>}
+                                {r.schemePmjjby && <span className="badge" style={{ background: '#f3e8ff', color: '#6b21a8' }}>PMJJBY</span>}
+                                {!r.schemeApy && !r.schemePmsby && !r.schemePmjjby && <span style={{ color: '#cbd5e1' }}>—</span>}
+                              </div>
                             </td>
                             <td>
                               <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>

@@ -48,6 +48,11 @@ export function AppProvider({ children }) {
         accountNumber: r.account_number,
         mobileNumber: r.mobile_number,
         address: r.address,
+        nomineeName: r.nominee_name,
+        nomineeAge: r.nominee_age,
+        schemeApy: r.scheme_apy,
+        schemePmsby: r.scheme_pmsby,
+        schemePmjjby: r.scheme_pmjjby,
         photo: r.photo_url ? { dataUrl: r.photo_url } : null,
         signature: r.signature_url ? { dataUrl: r.signature_url } : null,
         createdAt: r.created_at
@@ -131,6 +136,11 @@ export function AppProvider({ children }) {
         account_number: record.accountNumber,
         mobile_number: record.mobileNumber,
         address: record.address,
+        nominee_name: record.nomineeName,
+        nominee_age: record.nomineeAge,
+        scheme_apy: record.schemeApy,
+        scheme_pmsby: record.schemePmsby,
+        scheme_pmjjby: record.schemePmjjby,
         photo_url,
         signature_url,
       };
@@ -154,6 +164,11 @@ export function AppProvider({ children }) {
         accountNumber: data.account_number,
         mobileNumber: data.mobile_number,
         address: data.address,
+        nomineeName: data.nominee_name,
+        nomineeAge: data.nominee_age,
+        schemeApy: data.scheme_apy,
+        schemePmsby: data.scheme_pmsby,
+        schemePmjjby: data.scheme_pmjjby,
         photo: data.photo_url ? { dataUrl: data.photo_url } : null,
         signature: data.signature_url ? { dataUrl: data.signature_url } : null,
         createdAt: data.created_at
@@ -180,6 +195,11 @@ export function AppProvider({ children }) {
         account_number: r.accountNumber,
         mobile_number: r.mobileNumber,
         address: r.address,
+        nominee_name: r.nomineeName,
+        nominee_age: r.nomineeAge,
+        scheme_apy: r.schemeApy,
+        scheme_pmsby: r.schemePmsby,
+        scheme_pmjjby: r.schemePmjjby,
       }));
 
       const { data, error } = await supabase
@@ -200,6 +220,11 @@ export function AppProvider({ children }) {
         accountNumber: r.account_number,
         mobileNumber: r.mobile_number,
         address: r.address,
+        nomineeName: r.nominee_name,
+        nomineeAge: r.nominee_age,
+        schemeApy: r.scheme_apy,
+        schemePmsby: r.scheme_pmsby,
+        schemePmjjby: r.scheme_pmjjby,
         createdAt: r.created_at
       }));
 
@@ -222,6 +247,11 @@ export function AppProvider({ children }) {
         account_number: updatedData.accountNumber,
         mobile_number: updatedData.mobileNumber,
         address: updatedData.address,
+        nominee_name: updatedData.nomineeName,
+        nominee_age: updatedData.nomineeAge,
+        scheme_apy: updatedData.schemeApy,
+        scheme_pmsby: updatedData.schemePmsby,
+        scheme_pmjjby: updatedData.schemePmjjby,
       };
 
       const { data, error } = await supabase
@@ -244,6 +274,11 @@ export function AppProvider({ children }) {
         accountNumber: data.account_number,
         mobileNumber: data.mobile_number,
         address: data.address,
+        nomineeName: data.nominee_name,
+        nomineeAge: data.nominee_age,
+        schemeApy: data.scheme_apy,
+        schemePmsby: data.scheme_pmsby,
+        schemePmjjby: data.scheme_pmjjby,
         photo: data.photo_url ? { dataUrl: data.photo_url } : null,
         signature: data.signature_url ? { dataUrl: data.signature_url } : null,
         createdAt: data.created_at

@@ -34,8 +34,6 @@ export default function App() {
       <main style={{ flex: 1 }}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/records" element={<Records />} />
-          <Route path="/uploads" element={<Uploads />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="*" element={<Navigate to="/" replace />} />

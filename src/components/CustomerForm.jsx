@@ -16,8 +16,11 @@ const INITIAL_FORM = {
   accountNumber: '',
   mobileNumber: '',
   address: '',
-  photo: null,
-  signature: null,
+  nomineeName: '',
+  nomineeAge: '',
+  schemeApy: false,
+  schemePmsby: false,
+  schemePmjjby: false,
 };
 
 const InputField = ({ label, icon: Icon, type = 'text', value, onChange, placeholder, required, maxLength }) => (
@@ -111,28 +114,11 @@ export default function CustomerForm() {
   const { addRecord } = useApp();
   const [form, setForm] = useState(INITIAL_FORM);
   const [loading, setLoading] = useState(false);
-  const photoRef = useRef();
-  const signRef = useRef();
-
-  const handleFileChange = (e, field) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 20 * 1024) {
-        toast.error('File size must be less than 20KB');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm(prev => ({ ...prev, [field]: { name: file.name, dataUrl: reader.result } }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.customerName || !form.aadharNumber || !form.customerId) {
-      toast.error('Name, Aadhar, and Customer ID are required.');
+    if (!form.customerName || !form.aadharNumber || !form.customerId || !form.nomineeName || !form.nomineeAge) {
+      toast.error('Name, Aadhar, Customer ID, and Nominee details are required.');
       return;
     }
     if (!/^\d{12}$/.test(form.aadharNumber)) {
@@ -143,18 +129,19 @@ export default function CustomerForm() {
       toast.error('Mobile Number must be exactly 10 digits.');
       return;
     }
+    
     setLoading(true);
-    // Simulate slight delay for premium feel
-    setTimeout(() => {
-      addRecord(form);
-      setLoading(false);
+    const result = await addRecord(form);
+    setLoading(false);
+
+    if (result) {
       setForm(INITIAL_FORM);
       toast.success('Customer registered successfully!', {
         icon: '✅',
         style: { borderRadius: '10px', background: '#333', color: '#fff' },
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 1200);
+    }
   };
 
   return (
@@ -189,10 +176,12 @@ export default function CustomerForm() {
           <InputField label="Aadhar Number" icon={Fingerprint} placeholder="12 Digit Aadhar" required value={form.aadharNumber} maxLength="12" onChange={e => setForm({ ...form, aadharNumber: e.target.value.replace(/\D/g, '') })} />
           <InputField label="Account Number" icon={Landmark} placeholder="Union Bank A/c No" value={form.accountNumber} onChange={e => setForm({ ...form, accountNumber: e.target.value })} />
           <InputField label="Mobile Number" icon={Phone} placeholder="10 Digit Mobile" value={form.mobileNumber} maxLength="10" onChange={e => setForm({ ...form, mobileNumber: e.target.value.replace(/\D/g, '') })} />
+          <InputField label="Nominee Name" icon={User} placeholder="Full name of nominee" required value={form.nomineeName} onChange={e => setForm({ ...form, nomineeName: e.target.value })} />
+          <InputField label="Nominee Age" icon={Calendar} type="number" placeholder="Age" required value={form.nomineeAge} onChange={e => setForm({ ...form, nomineeAge: e.target.value })} />
         </div>
 
-        {/* Address & Uploads Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', alignItems: 'start' }}>
+        {/* Address Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', alignItems: 'start' }}>
           <div className="form-group">
             <label style={{ fontSize: '0.74rem', fontWeight: 800, color: '#1e293b', textTransform: 'uppercase', marginBottom: '8px', display: 'block', letterSpacing: '0.06em' }}>Address</label>
             <div style={{ position: 'relative' }}>
@@ -209,12 +198,59 @@ export default function CustomerForm() {
               />
             </div>
           </div>
+        </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ display: 'flex', gap: '16px' }}>
-              <FileZone label="Customer Photo" value={form.photo} field="photo" icon={Camera} type="photo" onUpload={handleFileChange} refs={{ photo: photoRef, sign: signRef }} setForm={setForm} />
-              <FileZone label="Digital Signature" value={form.signature} field="signature" icon={PenLine} type="signature" onUpload={handleFileChange} refs={{ photo: photoRef, sign: signRef }} setForm={setForm} />
+        {/* Schemes Section */}
+        <div style={{ background: '#f8faff', borderRadius: '18px', padding: '24px', border: '1px solid #e2e8f0' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+            <div style={{ width: '32px', height: '32px', background: '#003A8F', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <CheckCircle size={16} color="#fff" />
             </div>
+            <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#003A8F', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Government Schemes (Optional)</h3>
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
+            {[
+              { id: 'schemeApy', label: 'APY (Atal Pension Yojana)' },
+              { id: 'schemePmsby', label: 'PMSBY (Accident Insurance)' },
+              { id: 'schemePmjjby', label: 'PMJJBY (Life Insurance)' },
+            ].map(scheme => (
+              <div 
+                key={scheme.id}
+                onClick={() => setForm({ ...form, [scheme.id]: !form[scheme.id] })}
+                style={{
+                  padding: '16px',
+                  borderRadius: '12px',
+                  background: form[scheme.id] ? '#003A8F' : '#fff',
+                  border: `2.5px solid ${form[scheme.id] ? '#003A8F' : '#e2e8f0'}`,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: form[scheme.id] ? '0 4px 12px rgba(0,58,143,0.3)' : 'none',
+                  transform: form[scheme.id] ? 'translateY(-2px)' : 'none',
+                }}
+              >
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '6px',
+                  border: `2px solid ${form[scheme.id] ? '#fff' : '#cbd5e1'}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: form[scheme.id] ? '#fff' : 'transparent',
+                }}>
+                  {form[scheme.id] && <CheckCircle size={14} color="#003A8F" />}
+                </div>
+                <span style={{ 
+                  fontSize: '0.78rem', 
+                  fontWeight: 700, 
+                  color: form[scheme.id] ? '#fff' : '#475569' 
+                }}>{scheme.label}</span>
+              </div>
+            ))}
           </div>
         </div>
 

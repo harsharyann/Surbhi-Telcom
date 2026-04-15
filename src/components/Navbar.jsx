@@ -10,7 +10,6 @@ export default function Navbar() {
 
   const navLinks = [
     { to: '/', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/records', label: 'Records', icon: FileText },
   ];
 
   const handleAdminClick = () => {
@@ -76,32 +75,22 @@ export default function Navbar() {
               </NavLink>
             ))}
             <button onClick={handleAdminClick} style={{
-              display: 'flex', alignItems: 'center', gap: '8px',
-              padding: '9px 24px', borderRadius: '14px',
-              background: 'linear-gradient(135deg, rgba(255,215,0,0.15) 0%, rgba(255,165,0,0.05) 100%)',
-              border: '1.5px solid rgba(255,215,0,0.5)',
-              color: '#FFD700',
-              fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer',
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255,255,255,0.82)',
+              fontSize: '0.88rem',
+              cursor: 'pointer',
               fontFamily: 'Poppins, sans-serif',
-              boxShadow: '0 0 15px rgba(255,215,0,0.15)',
+              padding: '8px 16px',
+              transition: 'all 0.2s ease',
+              fontWeight: 400,
               letterSpacing: '0.02em',
-              textShadow: '0 0 8px rgba(255,215,0,0.2)',
               textTransform: 'uppercase'
             }}
-              onMouseEnter={e => { 
-                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255,215,0,0.25) 0%, rgba(255,165,0,0.15) 100%)'; 
-                e.currentTarget.style.boxShadow = '0 0 25px rgba(255,215,0,0.3)';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-              }}
-              onMouseLeave={e => { 
-                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255,215,0,0.15) 0%, rgba(255,165,0,0.05) 100%)'; 
-                e.currentTarget.style.boxShadow = '0 0 15px rgba(255,215,0,0.15)';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
+              onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.82)'}
             >
-              <LogIn size={18} color="#FFD700" />
-              SHAILESH KUMAR NIRALA
+              Shailesh Kumar Nirala
             </button>
             {isAdminLoggedIn && (
               <button onClick={() => { adminLogout(); navigate('/'); }} style={{
@@ -154,16 +143,20 @@ export default function Navbar() {
               </NavLink>
             ))}
             <button onClick={handleAdminClick} style={{
-              display: 'flex', alignItems: 'center', gap: '10px',
-              padding: '11px 16px', borderRadius: '10px',
-              background: 'linear-gradient(135deg, rgba(255,215,0,0.2) 0%, rgba(255,165,0,0.1) 100%)',
-              border: '1px solid rgba(255,215,0,0.5)',
-              color: '#FFD700', fontSize: '0.92rem', cursor: 'pointer',
+              background: 'rgba(255,255,255,0.05)',
+              border: 'none',
+              borderRadius: '10px',
+              color: 'rgba(255,255,255,0.85)',
+              fontSize: '0.92rem',
+              cursor: 'pointer',
+              textAlign: 'left',
+              padding: '11px 16px',
+              fontWeight: 400,
+              textTransform: 'uppercase',
+              width: '100%',
               fontFamily: 'Poppins, sans-serif',
-              fontWeight: 800,
-              textTransform: 'uppercase'
             }}>
-              <LogIn size={18} color="#FFD700" /> SHAILESH KUMAR NIRALA
+              Shailesh Kumar Nirala
             </button>
           </div>
         )}

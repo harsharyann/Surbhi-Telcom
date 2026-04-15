@@ -16,36 +16,12 @@ export default function StatsCards() {
 
   const stats = [
     {
-      label: 'Total Accounts Opened',
-      value: records.length,
-      icon: Users,
-      gradient: 'linear-gradient(135deg, #003A8F 0%, #0052CC 100%)',
-      shadow: 'rgba(0,58,143,0.35)',
-      sub: 'By Surbhi Telcom',
-    },
-    {
-      label: "Today's Registrations",
+      label: 'Today',
       value: todayCount,
       icon: TrendingUp,
       gradient: 'linear-gradient(135deg, #E31E24 0%, #ff5252 100%)',
-      shadow: 'rgba(227,30,36,0.35)',
-      sub: 'New accounts today',
-    },
-    {
-      label: 'This Month',
-      value: monthCount,
-      icon: CalendarCheck,
-      gradient: 'linear-gradient(135deg, #1565C0 0%, #1E88E5 100%)',
-      shadow: 'rgba(21,101,192,0.35)',
-      sub: now.toLocaleString('en-IN', { month: 'long', year: 'numeric' }),
-    },
-    {
-      label: 'All Records',
-      value: records.length,
-      icon: FileText,
-      gradient: 'linear-gradient(135deg, #4a00a0 0%, #7c3aed 100%)',
-      shadow: 'rgba(124,58,237,0.35)',
-      sub: 'Total submissions',
+      shadow: 'rgba(227,30,36,0.25)',
+      sub: 'New registrations',
     },
   ];
 
