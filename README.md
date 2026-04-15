@@ -39,8 +39,8 @@ App runs at: `http://localhost:5173/`
 
 | Field | Value |
 |-------|-------|
-| Username | `admin` |
-| Password | `!unionopen0` |
+| Username 
+| Password 
 
 > Admin panel is **not linked** from the main navigation to keep it hidden. Access it by clicking the subtle **Admin** button in the navbar, or navigating directly to `/admin-login`.
 
