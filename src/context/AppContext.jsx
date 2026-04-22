@@ -343,8 +343,17 @@ export function AppProvider({ children }) {
       const { data, error } = await supabase.from('documents').insert([dbFile]).select().single();
       if (error) throw error;
 
-      setUploads(prev => [data, ...prev]);
-      return data;
+      const mappedUpload = {
+        id: data.id,
+        name: data.name,
+        size: data.size,
+        type: data.type,
+        url: data.url,
+        uploadedAt: data.uploaded_at
+      };
+
+      setUploads(prev => [mappedUpload, ...prev]);
+      return mappedUpload;
     } catch (err) {
       toast.error('Upload failed: ' + err.message);
     }
