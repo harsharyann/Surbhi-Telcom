@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, LogIn, LogOut, Menu, X, Building2 } from 'lucide-react';
+import { LayoutDashboard, FileText, LogIn, LogOut, Menu, X, Building2, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 
