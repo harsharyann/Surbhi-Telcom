@@ -426,10 +426,12 @@ export default function AdminPanel() {
     setPendingDelete(null);
   };
 
-  const handleSave = (updated) => {
-    updateRecord(updated.id, updated);
-    setEditRecord(null);
-    toast.success('Record updated successfully!');
+  const handleSave = async (updated) => {
+    const success = await updateRecord(updated.id, updated);
+    if (success) {
+      setEditRecord(null);
+      toast.success('Record updated successfully!');
+    }
   };
 
   const handleImport = (rows) => {

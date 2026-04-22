@@ -114,6 +114,27 @@ export default function CustomerForm() {
   const { addRecord } = useApp();
   const [form, setForm] = useState(INITIAL_FORM);
   const [loading, setLoading] = useState(false);
+  const photoRef = useRef();
+  const signRef = useRef();
+
+  const handleFileUpload = (e, field) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 20 * 1024) {
+      toast.error('File too large! Max 20KB allowed.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setForm(prev => ({
+        ...prev,
+        [field]: { name: file.name, dataUrl: event.target.result }
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -180,8 +201,8 @@ export default function CustomerForm() {
           <InputField label="Nominee Age" icon={Calendar} type="number" placeholder="Age" required value={form.nomineeAge} onChange={e => setForm({ ...form, nomineeAge: e.target.value })} />
         </div>
 
-        {/* Address Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', alignItems: 'start' }}>
+        {/* Address & Uploads Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px', alignItems: 'start' }}>
           <div className="form-group">
             <label style={{ fontSize: '0.74rem', fontWeight: 800, color: '#1e293b', textTransform: 'uppercase', marginBottom: '8px', display: 'block', letterSpacing: '0.06em' }}>Address</label>
             <div style={{ position: 'relative' }}>
@@ -197,6 +218,28 @@ export default function CustomerForm() {
                 style={{ paddingLeft: '44px', paddingTop: '14px', resize: 'vertical', minHeight: '140px', fontWeight: 700, color: '#002560' }}
               />
             </div>
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+            <FileZone 
+              label="Customer Photo" 
+              icon={Camera} 
+              field="photo" 
+              value={form.photo} 
+              onUpload={handleFileUpload} 
+              refs={{ photo: photoRef, sign: signRef }}
+              setForm={setForm}
+            />
+            <FileZone 
+              label="Signature / Thumb" 
+              icon={PenLine} 
+              field="signature" 
+              type="signature" 
+              value={form.signature} 
+              onUpload={handleFileUpload} 
+              refs={{ photo: photoRef, sign: signRef }}
+              setForm={setForm}
+            />
           </div>
         </div>
 

@@ -11,17 +11,21 @@ export function AppProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Initial Data Fetch
-    fetchInitialData();
-
-    // 2. Auth State Listener
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // 1. Auth State Listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
       setLoading(false);
+      
+      // Re-fetch data whenever auth state changes (login/logout)
+      // This ensures RLS-protected data is fetched after login
+      fetchInitialData();
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // Initial session check
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session) fetchInitialData();
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -286,8 +290,10 @@ export function AppProvider({ children }) {
 
       setRecords(prev => prev.map(r => r.id === id ? mappedRecord : r));
       toast.success('Record updated');
+      return true;
     } catch (err) {
       toast.error('Update failed: ' + err.message);
+      return false;
     }
   };
 
