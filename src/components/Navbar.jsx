@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 
 export default function Navbar() {
-  const { isAdminLoggedIn, adminLogout } = useApp();
+  const { isAdminLoggedIn, adminLogout, isConnected } = useApp();
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -107,6 +107,24 @@ export default function Navbar() {
                 Logout
               </button>
             )}
+            
+            {/* Connection Status */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '6px 12px', borderRadius: '20px',
+              background: 'rgba(0,0,0,0.2)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              marginLeft: '8px'
+            }}>
+              <div style={{
+                width: '8px', height: '8px', borderRadius: '50%',
+                background: isConnected ? '#10b981' : '#ef4444',
+                boxShadow: isConnected ? '0 0 8px #10b981' : '0 0 8px #ef4444'
+              }} />
+              <span style={{ fontSize: '0.65rem', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                {isConnected ? 'DB Live' : 'DB Offline'}
+              </span>
+            </div>
           </div>
 
           {/* Mobile Hamburger */}

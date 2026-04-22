@@ -9,22 +9,30 @@ export function AppProvider({ children }) {
   const [uploads, setUploads] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     // 1. Auth State Listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
       setLoading(false);
-      
-      // Re-fetch data whenever auth state changes (login/logout)
-      // This ensures RLS-protected data is fetched after login
       fetchInitialData();
     });
 
-    // Initial session check
+    // Initial session and connection check
+    const checkConnection = async () => {
+      try {
+        const { error } = await supabase.from('records').select('count', { count: 'exact', head: true });
+        setIsConnected(!error || error.code !== 'PGRST301');
+      } catch {
+        setIsConnected(false);
+      }
+    };
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session) fetchInitialData();
+      checkConnection();
       setLoading(false);
     });
 
@@ -373,7 +381,7 @@ export function AppProvider({ children }) {
     <AppContext.Provider value={{
       records, addRecord, addRecords, updateRecord, deleteRecord, clearAllRecords,
       uploads, addUpload, deleteUpload,
-      isAdminLoggedIn: !!user, adminLogin, adminLogout, loading,
+      isAdminLoggedIn: !!user, adminLogin, adminLogout, loading, isConnected,
     }}>
       {children}
     </AppContext.Provider>
