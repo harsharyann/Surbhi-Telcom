@@ -415,13 +415,11 @@ export default function AdminPanel() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated  = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  const confirmAction = () => {
+  const confirmAction = async () => {
     if (pendingDelete === 'all') {
-      clearAllRecords();
-      toast.success('All records cleared successfully.');
+      await clearAllRecords();
     } else {
-      deleteRecord(pendingDelete);
-      toast.success('Record deleted.');
+      await deleteRecord(pendingDelete);
     }
     setPendingDelete(null);
   };

@@ -302,8 +302,11 @@ export function AppProvider({ children }) {
       const { error } = await supabase.from('records').delete().eq('id', id);
       if (error) throw error;
       setRecords(prev => prev.filter(r => r.id !== id));
+      toast.success('Record deleted');
+      return true;
     } catch (err) {
       toast.error('Delete failed: ' + err.message);
+      return false;
     }
   };
 
@@ -313,8 +316,10 @@ export function AppProvider({ children }) {
       if (error) throw error;
       setRecords([]);
       toast.success('All records cleared');
+      return true;
     } catch (err) {
       toast.error('Clear failed: ' + err.message);
+      return false;
     }
   };
 
