@@ -1,3 +1,40 @@
+import { useState, useEffect } from 'react';
+import {
+  Hash, User, Fingerprint, Landmark, Phone, CheckCircle, Loader2,
+} from 'lucide-react';
+import { useApp } from '../context/AppContext';
+import toast from 'react-hot-toast';
+
+const INITIAL_FORM = {
+  slNo: '',
+  customerName: '',
+  aadharNumber: '',
+  accountNumber: '',
+  mobileNumber: '',
+};
+
+const InputField = ({ label, icon: Icon, type = 'text', value, onChange, placeholder, maxLength }) => (
+  <div className="form-group">
+    <label style={{ fontSize: '0.74rem', fontWeight: 800, color: '#1e293b', textTransform: 'uppercase', marginBottom: '8px', display: 'block', letterSpacing: '0.06em' }}>
+      {label}
+    </label>
+    <div style={{ position: 'relative' }}>
+      <div style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }}>
+        <Icon size={16} />
+      </div>
+      <input
+        className="neu-input"
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        style={{ paddingLeft: '44px', fontWeight: 700, color: '#002560' }}
+      />
+    </div>
+  </div>
+);
+
 export default function CustomerForm() {
   const { addRecord, records } = useApp();
   const [form, setForm] = useState(INITIAL_FORM);
@@ -19,7 +56,6 @@ export default function CustomerForm() {
     setLoading(false);
 
     if (result) {
-      // Form slNo will be updated by useEffect
       setForm({ ...INITIAL_FORM });
       toast.success('Customer registered successfully!', {
         icon: '✅',
@@ -101,4 +137,3 @@ export default function CustomerForm() {
     </div>
   );
 }
-
