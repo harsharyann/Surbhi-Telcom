@@ -52,21 +52,10 @@ export function AppProvider({ children }) {
       const mappedRecords = recData.map(r => ({
         id: r.id,
         slNo: r.sl_no,
-        dateOfOpening: r.date_of_opening,
         customerName: r.customer_name,
-        fatherName: r.father_name,
-        customerId: r.customer_id,
         aadharNumber: r.aadhar_number,
         accountNumber: r.account_number,
         mobileNumber: r.mobile_number,
-        address: r.address,
-        nomineeName: r.nominee_name,
-        nomineeAge: r.nominee_age,
-        schemeApy: r.scheme_apy,
-        schemePmsby: r.scheme_pmsby,
-        schemePmjjby: r.scheme_pmjjby,
-        photo: r.photo_url ? { dataUrl: r.photo_url } : null,
-        signature: r.signature_url ? { dataUrl: r.signature_url } : null,
         createdAt: r.created_at
       }));
       setRecords(mappedRecords);
@@ -109,52 +98,14 @@ export function AppProvider({ children }) {
     toast.success('Logged out');
   };
 
-  // Helper: Upload Base64 to Storage
-  const uploadBase64 = async (base64, bucket, path) => {
-    try {
-      const res = await fetch(base64);
-      const blob = await res.blob();
-      const { data, error } = await supabase.storage
-        .from(bucket)
-        .upload(path, blob, { upsert: true });
-      if (error) throw error;
-      const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(path);
-      return publicUrl;
-    } catch (err) {
-      console.error(`Upload error (${bucket}):`, err.message);
-      return null;
-    }
-  };
-
   const addRecord = async (record) => {
     try {
-      let photo_url = null;
-      let signature_url = null;
-
-      if (record.photo) {
-        photo_url = await uploadBase64(record.photo.dataUrl, 'photos', `${crypto.randomUUID()}-${record.photo.name}`);
-      }
-      if (record.signature) {
-        signature_url = await uploadBase64(record.signature.dataUrl, 'signatures', `${crypto.randomUUID()}-${record.signature.name}`);
-      }
-
       const dbRecord = {
         sl_no: record.slNo,
-        date_of_opening: record.dateOfOpening,
         customer_name: record.customerName,
-        father_name: record.fatherName,
-        customer_id: record.customerId,
         aadhar_number: record.aadharNumber,
         account_number: record.accountNumber,
         mobile_number: record.mobileNumber,
-        address: record.address,
-        nominee_name: record.nomineeName,
-        nominee_age: record.nomineeAge,
-        scheme_apy: record.schemeApy,
-        scheme_pmsby: record.schemePmsby,
-        scheme_pmjjby: record.schemePmjjby,
-        photo_url,
-        signature_url,
       };
 
       const { data, error } = await supabase
@@ -168,21 +119,10 @@ export function AppProvider({ children }) {
       const mappedRecord = {
         id: data.id,
         slNo: data.sl_no,
-        dateOfOpening: data.date_of_opening,
         customerName: data.customer_name,
-        fatherName: data.father_name,
-        customerId: data.customer_id,
         aadharNumber: data.aadhar_number,
         accountNumber: data.account_number,
         mobileNumber: data.mobile_number,
-        address: data.address,
-        nomineeName: data.nominee_name,
-        nomineeAge: data.nominee_age,
-        schemeApy: data.scheme_apy,
-        schemePmsby: data.scheme_pmsby,
-        schemePmjjby: data.scheme_pmjjby,
-        photo: data.photo_url ? { dataUrl: data.photo_url } : null,
-        signature: data.signature_url ? { dataUrl: data.signature_url } : null,
         createdAt: data.created_at
       };
 
@@ -196,22 +136,12 @@ export function AppProvider({ children }) {
 
   const addRecords = async (recordsArray) => {
     try {
-      // Bulk insert for Excel (assume no photos in Excel for now as per current logic)
       const dbRecords = recordsArray.map(r => ({
         sl_no: r.slNo,
-        date_of_opening: r.dateOfOpening,
         customer_name: r.customerName,
-        father_name: r.fatherName,
-        customer_id: r.customerId,
         aadhar_number: r.aadharNumber,
         account_number: r.accountNumber,
         mobile_number: r.mobileNumber,
-        address: r.address,
-        nominee_name: r.nomineeName,
-        nominee_age: r.nomineeAge,
-        scheme_apy: r.schemeApy,
-        scheme_pmsby: r.schemePmsby,
-        scheme_pmjjby: r.schemePmjjby,
       }));
 
       const { data, error } = await supabase
@@ -224,19 +154,10 @@ export function AppProvider({ children }) {
       const mappedRecords = data.map(r => ({
         id: r.id,
         slNo: r.sl_no,
-        dateOfOpening: r.date_of_opening,
         customerName: r.customer_name,
-        fatherName: r.father_name,
-        customerId: r.customer_id,
         aadharNumber: r.aadhar_number,
         accountNumber: r.account_number,
         mobileNumber: r.mobile_number,
-        address: r.address,
-        nomineeName: r.nominee_name,
-        nomineeAge: r.nominee_age,
-        schemeApy: r.scheme_apy,
-        schemePmsby: r.scheme_pmsby,
-        schemePmjjby: r.scheme_pmjjby,
         createdAt: r.created_at
       }));
 
@@ -251,19 +172,10 @@ export function AppProvider({ children }) {
     try {
       const dbData = {
         sl_no: updatedData.slNo,
-        date_of_opening: updatedData.dateOfOpening,
         customer_name: updatedData.customerName,
-        father_name: updatedData.fatherName,
-        customer_id: updatedData.customerId,
         aadhar_number: updatedData.aadharNumber,
         account_number: updatedData.accountNumber,
         mobile_number: updatedData.mobileNumber,
-        address: updatedData.address,
-        nominee_name: updatedData.nomineeName,
-        nominee_age: updatedData.nomineeAge,
-        scheme_apy: updatedData.schemeApy,
-        scheme_pmsby: updatedData.schemePmsby,
-        scheme_pmjjby: updatedData.schemePmjjby,
       };
 
       const { data, error } = await supabase
@@ -278,21 +190,10 @@ export function AppProvider({ children }) {
       const mappedRecord = {
         id: data.id,
         slNo: data.sl_no,
-        dateOfOpening: data.date_of_opening,
         customerName: data.customer_name,
-        fatherName: data.father_name,
-        customerId: data.customer_id,
         aadharNumber: data.aadhar_number,
         accountNumber: data.account_number,
         mobileNumber: data.mobile_number,
-        address: data.address,
-        nomineeName: data.nominee_name,
-        nomineeAge: data.nominee_age,
-        schemeApy: data.scheme_apy,
-        schemePmsby: data.scheme_pmsby,
-        schemePmjjby: data.scheme_pmjjby,
-        photo: data.photo_url ? { dataUrl: data.photo_url } : null,
-        signature: data.signature_url ? { dataUrl: data.signature_url } : null,
         createdAt: data.created_at
       };
 

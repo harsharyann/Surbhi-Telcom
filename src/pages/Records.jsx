@@ -30,24 +30,14 @@ export default function Records() {
   const exportExcel = () => {
     if (filtered.length === 0) { toast.error('No records to export.'); return; }
     const data = filtered.map((r, i) => ({
-      '#':               i + 1,
       'Serial No.':      r.slNo || '',
-      'Date of Opening': r.dateOfOpening || '',
       'Customer Name':   r.customerName || '',
-      "Father's Name":   r.fatherName || '',
-      'Customer ID':     r.customerId || '',
-      'Aadhar Number':   r.aadharNumber || '',
       'Account Number':  r.accountNumber || '',
+      'Aadhar Number':   r.aadharNumber || '',
       'Contact No':      r.mobileNumber || '',
-      'Address':         r.address || '',
-      'Registered On':   r.createdAt ? new Date(r.createdAt).toLocaleString('en-IN') : '',
     }));
     const ws = XLSX.utils.json_to_sheet(data);
-    // Column widths
-    ws['!cols'] = [
-      { wch: 4 }, { wch: 8 }, { wch: 14 }, { wch: 22 }, { wch: 22 },
-      { wch: 14 }, { wch: 16 }, { wch: 18 }, { wch: 13 }, { wch: 30 }, { wch: 20 },
-    ];
+    ws['!cols'] = [{ wch: 12 }, { wch: 25 }, { wch: 20 }, { wch: 18 }, { wch: 15 }];
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Customers');
     const buf = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
@@ -59,7 +49,7 @@ export default function Records() {
   };
 
   return (
-    <div className="page-enter" style={{ maxWidth: '1300px', margin: '0 auto', padding: '40px 24px 60px' }}>
+    <div className="page-enter" style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px 60px' }}>
 
       {/* Header */}
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: '12px', marginBottom: '28px' }}>
@@ -86,7 +76,7 @@ export default function Records() {
           <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
           <input
             className="neu-input"
-            placeholder="Search by name, ID, account, contact..."
+            placeholder="Search by name, Aadhar, account, contact..."
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(1); }}
             style={{ paddingLeft: '42px' }}
@@ -116,10 +106,9 @@ export default function Records() {
                     <tr>
                       <th>#</th>
                       <th>Serial No.</th>
-                      <th>Date</th>
                       <th>Customer Name</th>
-                      <th>Customer ID</th>
                       <th>Account No</th>
+                      <th>Aadhar No</th>
                       <th>Contact No</th>
                       <th style={{ textAlign: 'center' }}>Actions</th>
                     </tr>
@@ -129,20 +118,12 @@ export default function Records() {
                       <tr key={r.id} style={{ background: selected?.id === r.id ? '#eef3ff' : undefined }}>
                         <td style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{(page - 1) * PAGE_SIZE + i + 1}</td>
                         <td><span className="badge badge-blue">{r.slNo || '—'}</span></td>
-                        <td style={{ fontSize: '0.8rem', color: '#64748b', whiteSpace: 'nowrap' }}>
-                          {r.dateOfOpening ? new Date(r.dateOfOpening).toLocaleDateString('en-IN') : '—'}
-                        </td>
                         <td style={{ fontWeight: 600 }}>{r.customerName}</td>
-                        <td>
-                          <code style={{ fontSize: '0.78rem', background: '#f1f5f9', padding: '2px 7px', borderRadius: '6px' }}>
-                            {r.customerId || '—'}
-                          </code>
-                        </td>
                         <td style={{ fontSize: '0.8rem' }}>{r.accountNumber || '—'}</td>
+                        <td style={{ fontSize: '0.8rem' }}>{r.aadharNumber || '—'}</td>
                         <td style={{ fontSize: '0.8rem' }}>{r.mobileNumber || '—'}</td>
                         <td>
                           <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                            {/* View */}
                             <button
                               id={`view-${r.id}`}
                               onClick={() => setSelected(selected?.id === r.id ? null : r)}
@@ -186,7 +167,6 @@ export default function Records() {
                       color: page === p ? '#fff' : '#64748b',
                       border: page === p ? 'none' : '1.5px solid #e2e8f0',
                       fontWeight: page === p ? 600 : 400, fontSize: '0.82rem',
-                      fontFamily: 'Poppins, sans-serif',
                     }}>{p}</button>
                   ))}
                   <button className="btn-outline" style={{ padding: '6px 12px' }} disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>
@@ -214,30 +194,13 @@ export default function Records() {
               </button>
             </div>
 
-            {/* Photo */}
-            {selected.photo?.dataUrl && (
-              <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-                <img
-                  src={selected.photo.dataUrl}
-                  alt="Customer"
-                  style={{
-                    width: '80px', height: '80px', objectFit: 'cover',
-                    borderRadius: '50%', border: '3px solid #003A8F',
-                  }}
-                />
-              </div>
-            )}
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {[
                 { label: 'Serial No.',     value: selected.slNo,          icon: Hash },
-                { label: 'Date Opened',    value: selected.dateOfOpening ? new Date(selected.dateOfOpening).toLocaleDateString('en-IN') : '—', icon: Calendar },
                 { label: 'Customer Name',  value: selected.customerName,  icon: User },
-                { label: "Father's Name",  value: selected.fatherName,    icon: User },
-                { label: 'Customer ID',    value: selected.customerId,    icon: Hash },
-                { label: 'Aadhar No',      value: selected.aadharNumber,  icon: Hash },
                 { label: 'Account No',     value: selected.accountNumber, icon: Hash },
-                { label: 'Contact No',         value: selected.mobileNumber,  icon: Phone },
+                { label: 'Aadhar No',      value: selected.aadharNumber,  icon: Hash },
+                { label: 'Contact No',     value: selected.mobileNumber,  icon: Phone },
               ].map(({ label, value, icon: Icon }) => (
                 <div key={label} style={{
                   display: 'flex', flexDirection: 'column', gap: '2px',
@@ -252,19 +215,6 @@ export default function Records() {
                   </div>
                 </div>
               ))}
-              {selected.address && (
-                <div style={{ padding: '10px 12px', background: '#f8faff', borderRadius: '10px' }}>
-                  <div style={{ color: '#94a3b8', fontWeight: 600, fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>Address</div>
-                  <div style={{ color: '#334155', fontSize: '0.82rem', lineHeight: 1.5 }}>{selected.address}</div>
-                </div>
-              )}
-              {/* Signature preview */}
-              {selected.signature?.dataUrl && (
-                <div style={{ padding: '10px 12px', background: '#f8faff', borderRadius: '10px' }}>
-                  <div style={{ color: '#94a3b8', fontWeight: 600, fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>Signature</div>
-                  <img src={selected.signature.dataUrl} alt="Signature" style={{ maxWidth: '100%', maxHeight: '60px', objectFit: 'contain' }} />
-                </div>
-              )}
             </div>
           </div>
         )}

@@ -15,14 +15,10 @@ const PAGE_SIZE = 10;
 /* ─── Column name aliases – handles various Excel header formats ─── */
 const COL = {
   slNo:          ['serial no.', 'serial no', 'sl no', 'sl.no', 'slno', 'serial no', 'sr no', 'sr.no'],
-  dateOfOpening: ['date of opening', 'date of account opening', 'account opening date', 'date'],
   customerName:  ['customer name', 'name', 'full name'],
-  fatherName:    ["father's name", 'father name', 'fathername', "father"],
-  customerId:    ['customer id', 'customerid', 'cust id', 'cust. id'],
   aadharNumber:  ['aadhar number', 'aadhar no', 'aadhar', 'aadhaar', 'aadhaar number'],
   accountNumber: ['account number', 'account no', 'acc no', 'acc number', 'bank account', 'a/c. no.', 'a/c no', 'account no.'],
   mobileNumber:  ['mobile number', 'mobile', 'mobile no', 'phone', 'phone number', 'contact no', 'contact', 'mobile no.'],
-  address:       ['address', 'addr', 'residential address'],
 };
 
 function findVal(row, aliases) {
@@ -83,15 +79,10 @@ function EditModal({ record, onSave, onClose }) {
 
   const fields = [
     { key: 'slNo', label: 'Serial No.' },
-    { key: 'dateOfOpening', label: 'Date of Opening', type: 'date' },
     { key: 'customerName', label: 'Customer Name' },
-    { key: 'fatherName', label: "Father's Name" },
-    { key: 'customerId', label: 'Customer ID' },
-    { key: 'aadharNumber', label: 'Aadhar Number' },
     { key: 'accountNumber', label: 'Account Number' },
+    { key: 'aadharNumber', label: 'Aadhar Number' },
     { key: 'mobileNumber', label: 'Mobile Number' },
-    { key: 'nomineeName', label: 'Nominee Name' },
-    { key: 'nomineeAge', label: 'Nominee Age', type: 'number' },
   ];
 
   return (
@@ -121,34 +112,9 @@ function EditModal({ record, onSave, onClose }) {
             </div>
           ))}
         </div>
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ fontSize: '0.72rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>Schemes</label>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            {[
-              { id: 'schemeApy', label: 'APY' },
-              { id: 'schemePmsby', label: 'PMSBY' },
-              { id: 'schemePmjjby', label: 'PMJJBY' },
-            ].map(s => (
-              <label key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', cursor: 'pointer', background: form[s.id] ? '#003A8F' : '#f1f5f9', color: form[s.id] ? '#fff' : '#64748b', padding: '6px 12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <input type="checkbox" checked={form[s.id] || false} onChange={e => set(s.id, e.target.checked)} style={{ display: 'none' }} />
-                {s.label}
-              </label>
-            ))}
-          </div>
-        </div>
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ fontSize: '0.72rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Address</label>
-          <textarea className="neu-input" rows={2} value={form.address || ''} onChange={e => set('address', e.target.value)} style={{ paddingLeft: '12px', resize: 'vertical' }} />
-        </div>
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
           <button className="btn-outline" onClick={onClose}>Cancel</button>
-          <button className="btn-primary" onClick={() => {
-            if (!form.customerName || !form.aadharNumber || !form.customerId || !form.nomineeName || !form.nomineeAge) {
-              toast.error('Name, Aadhar, Customer ID, and Nominee details are required.');
-              return;
-            }
-            onSave(form);
-          }}>
+          <button className="btn-primary" onClick={() => onSave(form)}>
             <CheckCircle size={15} style={{ marginRight: '6px' }} /> Save Changes
           </button>
         </div>
@@ -199,14 +165,10 @@ function ImportModal({ rows, onConfirm, onClose }) {
               <tr>
                 <th>#</th>
                 <th>Serial No.</th>
-                <th>Date</th>
                 <th>Customer Name</th>
-                <th>Father's Name</th>
-                <th>Customer ID</th>
-                <th>Aadhar</th>
                 <th>Account No</th>
+                <th>Aadhar</th>
                 <th>Contact No</th>
-                <th>Address</th>
               </tr>
             </thead>
             <tbody>
@@ -214,14 +176,10 @@ function ImportModal({ rows, onConfirm, onClose }) {
                 <tr key={i}>
                   <td style={{ color: '#94a3b8' }}>{i + 1}</td>
                   <td>{r.slNo || '—'}</td>
-                  <td style={{ whiteSpace: 'nowrap' }}>{r.dateOfOpening || '—'}</td>
                   <td style={{ fontWeight: 600 }}>{r.customerName || '—'}</td>
-                  <td>{r.fatherName || '—'}</td>
-                  <td><code style={{ background: '#f1f5f9', padding: '1px 6px', borderRadius: '5px', fontSize: '0.72rem' }}>{r.customerId || '—'}</code></td>
-                  <td style={{ fontFamily: 'monospace' }}>{r.aadharNumber || '—'}</td>
                   <td>{r.accountNumber || '—'}</td>
+                  <td style={{ fontFamily: 'monospace' }}>{r.aadharNumber || '—'}</td>
                   <td>{r.mobileNumber || '—'}</td>
-                  <td style={{ maxWidth: '130px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={r.address}>{r.address || '—'}</td>
                 </tr>
               ))}
             </tbody>
@@ -260,14 +218,10 @@ function ExcelImportSection({ onImport }) {
         if (!raw.length) { toast.error('No data found in the Excel file.'); return; }
         const mapped = raw.map(row => ({
           slNo:          findVal(row, COL.slNo),
-          dateOfOpening: findVal(row, COL.dateOfOpening),
           customerName:  findVal(row, COL.customerName),
-          fatherName:    findVal(row, COL.fatherName),
-          customerId:    findVal(row, COL.customerId),
           aadharNumber:  findVal(row, COL.aadharNumber),
           accountNumber: findVal(row, COL.accountNumber),
           mobileNumber:  findVal(row, COL.mobileNumber),
-          address:       findVal(row, COL.address),
         })).filter(r => r.customerName); // skip empty rows
         if (!mapped.length) { toast.error('Could not map any rows. Check column headers match the expected format.'); return; }
         setPreviewRows(mapped);
@@ -361,14 +315,10 @@ function ExcelImportSection({ onImport }) {
             </div>
             {[
               ['Serial No.', 'serial no. / slno'],
-              ['Date', 'date of opening'],
               ['Name', 'customer name'],
-              ['Father', "father's name"],
-              ['Customer ID', 'customer id'],
               ['Aadhar', 'aadhar number'],
               ['Account', 'account number'],
               ['Mobile', 'mobile number'],
-              ['Address', 'address'],
             ].map(([field, hint]) => (
               <div key={field} style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', padding: '4px 0', borderBottom: '1px solid #f1f5f9' }}>
                 <span style={{ fontWeight: 600, color: '#475569' }}>{field}</span>
@@ -442,20 +392,10 @@ export default function AdminPanel() {
   const exportExcel = () => {
     const data = filtered.map(r => ({
       'Serial No.':      r.slNo,
-      'Date of Opening': r.dateOfOpening,
       'Customer Name':   r.customerName,
-      "Father's Name":   r.fatherName,
-      'Customer ID':     r.customerId,
-      'Aadhar Number':   r.aadharNumber,
       'Account Number':  r.accountNumber,
+      'Aadhar Number':   r.aadharNumber,
       'Mobile':          r.mobileNumber,
-      'Address':         r.address,
-      'Nominee Name':    r.nomineeName,
-      'Nominee Age':     r.nomineeAge,
-      'APY':             r.schemeApy ? 'YES' : 'NO',
-      'PMSBY':           r.schemePmsby ? 'YES' : 'NO',
-      'PMJJBY':          r.schemePmjjby ? 'YES' : 'NO',
-      'Registered At':   new Date(r.createdAt).toLocaleString('en-IN'),
     }));
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
@@ -573,30 +513,11 @@ export default function AdminPanel() {
                     <Search size={15} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
                     <input
                       className="neu-input"
-                      placeholder="Search name, ID, account, Aadhar..."
+                      placeholder="Search name, Aadhar, account..."
                       value={search}
                       onChange={e => { setSearch(e.target.value); setPage(1); }}
                       style={{ paddingLeft: '42px' }}
                     />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Filter size={15} color="#94a3b8" />
-                    <input
-                      className="neu-input"
-                      type="date"
-                      value={filterDate}
-                      onChange={e => { setFilterDate(e.target.value); setPage(1); }}
-                      style={{ paddingLeft: '12px', width: 'auto', minWidth: '160px' }}
-                      title="Filter by account opening date"
-                    />
-                    {filterDate && (
-                      <button
-                        onClick={() => setFilterDate('')}
-                        style={{ padding: '8px 12px', borderRadius: '10px', background: '#fee2e2', border: 'none', color: '#991b1b', fontSize: '0.78rem', cursor: 'pointer', whiteSpace: 'nowrap' }}
-                      >
-                        Clear Filter
-                      </button>
-                    )}
                   </div>
                 </div>
                 {records.length > 0 && (
@@ -635,16 +556,10 @@ export default function AdminPanel() {
                         <tr>
                           <th>#</th>
                           <th>Serial No.</th>
-                          <th>Date</th>
                           <th>Customer Name</th>
-                          <th>Father's Name</th>
-                          <th>Customer ID</th>
-                          <th>Aadhar</th>
                           <th>Account No</th>
+                          <th>Aadhar</th>
                           <th>Contact No</th>
-                          <th>Address</th>
-                          <th>Nominee</th>
-                          <th>Schemes</th>
                           <th style={{ textAlign: 'center' }}>Actions</th>
                         </tr>
                       </thead>
@@ -653,28 +568,10 @@ export default function AdminPanel() {
                           <tr key={r.id}>
                             <td style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{(page - 1) * PAGE_SIZE + i + 1}</td>
                             <td><span className="badge badge-blue">{r.slNo}</span></td>
-                            <td style={{ fontSize: '0.78rem', color: '#64748b', whiteSpace: 'nowrap' }}>
-                              {r.dateOfOpening ? new Date(r.dateOfOpening).toLocaleDateString('en-IN') : '—'}
-                            </td>
                             <td style={{ fontWeight: 600, whiteSpace: 'nowrap' }}>{r.customerName}</td>
-                            <td style={{ fontSize: '0.82rem', color: '#475569' }}>{r.fatherName}</td>
-                            <td><code style={{ fontSize: '0.75rem', background: '#f1f5f9', padding: '2px 7px', borderRadius: '6px' }}>{r.customerId}</code></td>
-                            <td style={{ fontSize: '0.78rem', fontFamily: 'monospace', letterSpacing: '0.05em' }}>{r.aadharNumber}</td>
                             <td style={{ fontSize: '0.8rem' }}>{r.accountNumber}</td>
+                            <td style={{ fontSize: '0.78rem', fontFamily: 'monospace', letterSpacing: '0.05em' }}>{r.aadharNumber}</td>
                             <td style={{ fontSize: '0.8rem' }}>{r.mobileNumber}</td>
-                            <td style={{ fontSize: '0.78rem', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={r.address}>{r.address}</td>
-                            <td style={{ fontSize: '0.78rem' }}>
-                              <div style={{ fontWeight: 600 }}>{r.nomineeName}</div>
-                              <div style={{ fontSize: '0.7rem', color: '#64748b' }}>Age: {r.nomineeAge}</div>
-                            </td>
-                            <td style={{ fontSize: '0.75rem' }}>
-                              <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                                {r.schemeApy && <span className="badge" style={{ background: '#dcfce7', color: '#166534' }}>APY</span>}
-                                {r.schemePmsby && <span className="badge" style={{ background: '#fef9c3', color: '#854d0e' }}>PMSBY</span>}
-                                {r.schemePmjjby && <span className="badge" style={{ background: '#f3e8ff', color: '#6b21a8' }}>PMJJBY</span>}
-                                {!r.schemeApy && !r.schemePmsby && !r.schemePmjjby && <span style={{ color: '#cbd5e1' }}>—</span>}
-                              </div>
-                            </td>
                             <td>
                               <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                                 <button title="Edit" onClick={() => setEditRecord(r)}
