@@ -20,8 +20,8 @@ const COL = {
   fatherName:    ["father's name", 'father name', 'fathername', "father"],
   customerId:    ['customer id', 'customerid', 'cust id', 'cust. id'],
   aadharNumber:  ['aadhar number', 'aadhar no', 'aadhar', 'aadhaar', 'aadhaar number'],
-  accountNumber: ['account number', 'account no', 'acc no', 'acc number', 'bank account'],
-  mobileNumber:  ['mobile number', 'mobile', 'mobile no', 'phone', 'phone number'],
+  accountNumber: ['account number', 'account no', 'acc no', 'acc number', 'bank account', 'a/c. no.', 'a/c no', 'account no.'],
+  mobileNumber:  ['mobile number', 'mobile', 'mobile no', 'phone', 'phone number', 'contact no', 'contact', 'mobile no.'],
   address:       ['address', 'addr', 'residential address'],
 };
 
@@ -205,7 +205,7 @@ function ImportModal({ rows, onConfirm, onClose }) {
                 <th>Customer ID</th>
                 <th>Aadhar</th>
                 <th>Account No</th>
-                <th>Mobile</th>
+                <th>Contact No</th>
                 <th>Address</th>
               </tr>
             </thead>
@@ -641,7 +641,7 @@ export default function AdminPanel() {
                           <th>Customer ID</th>
                           <th>Aadhar</th>
                           <th>Account No</th>
-                          <th>Mobile</th>
+                          <th>Contact No</th>
                           <th>Address</th>
                           <th>Nominee</th>
                           <th>Schemes</th>
