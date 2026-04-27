@@ -1,45 +1,15 @@
-import { useState, useRef } from 'react';
-import {
-  Hash, Calendar, User, Users, CreditCard, Fingerprint,
-  Landmark, Phone, MapPin, Camera, PenLine, CheckCircle, Loader2, Upload, X,
-} from 'lucide-react';
-import { useApp } from '../context/AppContext';
-import toast from 'react-hot-toast';
-
-const INITIAL_FORM = {
-  slNo: '',
-  customerName: '',
-  aadharNumber: '',
-  accountNumber: '',
-  mobileNumber: '',
-};
-
-const InputField = ({ label, icon: Icon, type = 'text', value, onChange, placeholder, maxLength }) => (
-  <div className="form-group">
-    <label style={{ fontSize: '0.74rem', fontWeight: 800, color: '#1e293b', textTransform: 'uppercase', marginBottom: '8px', display: 'block', letterSpacing: '0.06em' }}>
-      {label}
-    </label>
-    <div style={{ position: 'relative' }}>
-      <div style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }}>
-        <Icon size={16} />
-      </div>
-      <input
-        className="neu-input"
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        maxLength={maxLength}
-        style={{ paddingLeft: '44px', fontWeight: 700, color: '#002560' }}
-      />
-    </div>
-  </div>
-);
-
 export default function CustomerForm() {
-  const { addRecord } = useApp();
+  const { addRecord, records } = useApp();
   const [form, setForm] = useState(INITIAL_FORM);
   const [loading, setLoading] = useState(false);
+
+  // Auto-calculate next Serial No
+  useEffect(() => {
+    const nextSl = records.length > 0 
+      ? Math.max(...records.map(r => parseInt(r.slNo) || 0)) + 1 
+      : 1;
+    setForm(prev => ({ ...prev, slNo: nextSl.toString() }));
+  }, [records]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +19,8 @@ export default function CustomerForm() {
     setLoading(false);
 
     if (result) {
-      setForm(INITIAL_FORM);
+      // Form slNo will be updated by useEffect
+      setForm({ ...INITIAL_FORM });
       toast.success('Customer registered successfully!', {
         icon: '✅',
         style: { borderRadius: '10px', background: '#333', color: '#fff' },
@@ -80,7 +51,23 @@ export default function CustomerForm() {
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '32px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
-          <InputField label="Serial No." icon={Hash} placeholder="e.g. 001" value={form.slNo} onChange={e => setForm({ ...form, slNo: e.target.value })} />
+          <div className="form-group">
+            <label style={{ fontSize: '0.74rem', fontWeight: 800, color: '#1e293b', textTransform: 'uppercase', marginBottom: '8px', display: 'block', letterSpacing: '0.06em' }}>
+              Serial No.
+            </label>
+            <div style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }}>
+                <Hash size={16} />
+              </div>
+              <input
+                className="neu-input"
+                type="text"
+                value={form.slNo}
+                readOnly
+                style={{ paddingLeft: '44px', fontWeight: 700, color: '#64748b', background: '#f8fafc', cursor: 'not-allowed' }}
+              />
+            </div>
+          </div>
           <InputField label="Customer Name" icon={User} placeholder="Full Name" value={form.customerName} onChange={e => setForm({ ...form, customerName: e.target.value })} />
           <InputField label="Aadhar Number" icon={Fingerprint} placeholder="12 Digit Aadhar" value={form.aadharNumber} maxLength="12" onChange={e => setForm({ ...form, aadharNumber: e.target.value.replace(/\D/g, '') })} />
           <InputField label="Account Number" icon={Landmark} placeholder="Account No" value={form.accountNumber} onChange={e => setForm({ ...form, accountNumber: e.target.value })} />
