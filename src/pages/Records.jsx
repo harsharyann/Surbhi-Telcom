@@ -38,7 +38,7 @@ export default function Records() {
       'Customer ID':     r.customerId || '',
       'Aadhar Number':   r.aadharNumber || '',
       'Account Number':  r.accountNumber || '',
-      'Mobile':          r.mobileNumber || '',
+      'Contact No':      r.mobileNumber || '',
       'Address':         r.address || '',
       'Registered On':   r.createdAt ? new Date(r.createdAt).toLocaleString('en-IN') : '',
     }));
@@ -86,7 +86,7 @@ export default function Records() {
           <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
           <input
             className="neu-input"
-            placeholder="Search by name, ID, account, mobile..."
+            placeholder="Search by name, ID, account, contact..."
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(1); }}
             style={{ paddingLeft: '42px' }}
@@ -120,7 +120,7 @@ export default function Records() {
                       <th>Customer Name</th>
                       <th>Customer ID</th>
                       <th>Account No</th>
-                      <th>Mobile</th>
+                      <th>Contact No</th>
                       <th style={{ textAlign: 'center' }}>Actions</th>
                     </tr>
                   </thead>
@@ -237,7 +237,7 @@ export default function Records() {
                 { label: 'Customer ID',    value: selected.customerId,    icon: Hash },
                 { label: 'Aadhar No',      value: selected.aadharNumber,  icon: Hash },
                 { label: 'Account No',     value: selected.accountNumber, icon: Hash },
-                { label: 'Mobile',         value: selected.mobileNumber,  icon: Phone },
+                { label: 'Contact No',         value: selected.mobileNumber,  icon: Phone },
               ].map(({ label, value, icon: Icon }) => (
                 <div key={label} style={{
                   display: 'flex', flexDirection: 'column', gap: '2px',

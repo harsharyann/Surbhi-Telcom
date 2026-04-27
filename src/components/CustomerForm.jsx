@@ -196,7 +196,7 @@ export default function CustomerForm() {
           <InputField label="Customer ID" icon={CreditCard} placeholder="UID/Cust ID" required value={form.customerId} onChange={e => setForm({ ...form, customerId: e.target.value })} />
           <InputField label="Aadhar Number" icon={Fingerprint} placeholder="12 Digit Aadhar" required value={form.aadharNumber} maxLength="12" onChange={e => setForm({ ...form, aadharNumber: e.target.value.replace(/\D/g, '') })} />
           <InputField label="Account Number" icon={Landmark} placeholder="Union Bank A/c No" value={form.accountNumber} onChange={e => setForm({ ...form, accountNumber: e.target.value })} />
-          <InputField label="Mobile Number" icon={Phone} placeholder="10 Digit Mobile" value={form.mobileNumber} maxLength="10" onChange={e => setForm({ ...form, mobileNumber: e.target.value.replace(/\D/g, '') })} />
+          <InputField label="Contact No" icon={Phone} placeholder="10 Digit Mobile" value={form.mobileNumber} maxLength="10" onChange={e => setForm({ ...form, mobileNumber: e.target.value.replace(/\D/g, '') })} />
           <InputField label="Nominee Name" icon={User} placeholder="Full name of nominee" required value={form.nomineeName} onChange={e => setForm({ ...form, nomineeName: e.target.value })} />
           <InputField label="Nominee Age" icon={Calendar} type="number" placeholder="Age" required value={form.nomineeAge} onChange={e => setForm({ ...form, nomineeAge: e.target.value })} />
         </div>
