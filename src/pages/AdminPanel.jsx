@@ -340,7 +340,7 @@ function ExcelImportSection({ onImport }) {
    Main Admin Panel
 ══════════════════════════════════════════════ */
 export default function AdminPanel() {
-  const { records, uploads, deleteRecord, updateRecord, addRecords, clearAllRecords, isAdminLoggedIn, adminLogout } = useApp();
+  const { records, deleteRecord, updateRecord, addRecords, clearAllRecords, isAdminLoggedIn, adminLogout } = useApp();
   const navigate = useNavigate();
   const [search, setSearch]       = useState('');
   const [page, setPage]           = useState(1);

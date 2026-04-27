@@ -6,7 +6,6 @@ const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
   const [records, setRecords] = useState([]);
-  const [uploads, setUploads] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
@@ -59,23 +58,6 @@ export function AppProvider({ children }) {
         createdAt: r.created_at
       }));
       setRecords(mappedRecords);
-
-      const { data: upData, error: upError } = await supabase
-        .from('documents')
-        .select('*')
-        .order('uploaded_at', { ascending: false });
-      
-      if (upError) throw upError;
-      
-      const mappedUploads = upData.map(u => ({
-        id: u.id,
-        name: u.name,
-        size: u.size,
-        type: u.type,
-        url: u.url,
-        uploadedAt: u.uploaded_at
-      }));
-      setUploads(mappedUploads);
     } catch (err) {
       console.error('Error fetching data:', err.message);
     }
@@ -102,7 +84,7 @@ export function AppProvider({ children }) {
     try {
       const dbRecord = {
         sl_no: record.slNo,
-        customer_name: record.customerName,
+        customer_name: record.customer_name,
         aadhar_number: record.aadharNumber,
         account_number: record.accountNumber,
         mobile_number: record.mobileNumber,
@@ -138,10 +120,10 @@ export function AppProvider({ children }) {
     try {
       const dbRecords = recordsArray.map(r => ({
         sl_no: r.slNo,
-        customer_name: r.customerName,
-        aadhar_number: r.aadharNumber,
+        customer_name: r.customer_name,
+        aadhar_number: r.aadhar_number,
         account_number: r.accountNumber,
-        mobile_number: r.mobileNumber,
+        mobile_number: r.mobile_number,
       }));
 
       const { data, error } = await supabase
@@ -232,56 +214,9 @@ export function AppProvider({ children }) {
     }
   };
 
-  const addUpload = async (file) => {
-    try {
-      // 1. Upload to Storage
-      const path = `${crypto.randomUUID()}-${file.name}`;
-      const { error: upError } = await supabase.storage.from('documents').upload(path, file);
-      if (upError) throw upError;
-
-      const { data: { publicUrl } } = supabase.storage.from('documents').getPublicUrl(path);
-
-      // 2. Save to DB
-      const dbFile = {
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        url: publicUrl,
-      };
-
-      const { data, error } = await supabase.from('documents').insert([dbFile]).select().single();
-      if (error) throw error;
-
-      const mappedUpload = {
-        id: data.id,
-        name: data.name,
-        size: data.size,
-        type: data.type,
-        url: data.url,
-        uploadedAt: data.uploaded_at
-      };
-
-      setUploads(prev => [mappedUpload, ...prev]);
-      return mappedUpload;
-    } catch (err) {
-      toast.error('Upload failed: ' + err.message);
-    }
-  };
-
-  const deleteUpload = async (id) => {
-    try {
-      const { error } = await supabase.from('documents').delete().eq('id', id);
-      if (error) throw error;
-      setUploads(prev => prev.filter(u => u.id !== id));
-    } catch (err) {
-      toast.error('Delete failed: ' + err.message);
-    }
-  };
-
   return (
     <AppContext.Provider value={{
       records, addRecord, addRecords, updateRecord, deleteRecord, clearAllRecords,
-      uploads, addUpload, deleteUpload,
       isAdminLoggedIn: !!user, adminLogin, adminLogout, loading, isConnected,
     }}>
       {children}

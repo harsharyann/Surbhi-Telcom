@@ -11,7 +11,6 @@ export default function Navbar() {
   const navLinks = [
     { to: '/', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/records', label: 'Records', icon: FileText },
-    { to: '/uploads', label: 'Uploads', icon: Upload },
   ];
 
   const handleAdminClick = () => {
