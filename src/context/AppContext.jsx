@@ -50,6 +50,7 @@ export function AppProvider({ children }) {
       // Map snake_case from DB to camelCase for frontend
       const mappedRecords = recData.map(r => ({
         id: r.id,
+        customerId: r.customer_id,
         slNo: r.sl_no,
         customerName: r.customer_name,
         aadharNumber: r.aadhar_number,
@@ -83,8 +84,9 @@ export function AppProvider({ children }) {
   const addRecord = async (record) => {
     try {
       const dbRecord = {
+        customer_id: `ST-${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 100)}`,
         sl_no: record.slNo,
-        customer_name: record.customer_name,
+        customer_name: record.customerName,
         aadhar_number: record.aadharNumber,
         account_number: record.accountNumber,
         mobile_number: record.mobileNumber,
@@ -100,6 +102,7 @@ export function AppProvider({ children }) {
       
       const mappedRecord = {
         id: data.id,
+        customerId: data.customer_id,
         slNo: data.sl_no,
         customerName: data.customer_name,
         aadharNumber: data.aadhar_number,
@@ -119,11 +122,12 @@ export function AppProvider({ children }) {
   const addRecords = async (recordsArray) => {
     try {
       const dbRecords = recordsArray.map(r => ({
+        customer_id: r.customerId || `ST-${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 1000)}`,
         sl_no: r.slNo,
-        customer_name: r.customer_name,
-        aadhar_number: r.aadhar_number,
+        customer_name: r.customerName,
+        aadhar_number: r.aadharNumber,
         account_number: r.accountNumber,
-        mobile_number: r.mobile_number,
+        mobile_number: r.mobileNumber,
       }));
 
       const { data, error } = await supabase
@@ -135,6 +139,7 @@ export function AppProvider({ children }) {
 
       const mappedRecords = data.map(r => ({
         id: r.id,
+        customerId: r.customer_id,
         slNo: r.sl_no,
         customerName: r.customer_name,
         aadharNumber: r.aadhar_number,
@@ -171,6 +176,7 @@ export function AppProvider({ children }) {
       
       const mappedRecord = {
         id: data.id,
+        customerId: data.customer_id,
         slNo: data.sl_no,
         customerName: data.customer_name,
         aadharNumber: data.aadhar_number,
