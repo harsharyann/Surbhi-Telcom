@@ -99,8 +99,8 @@ export default function CustomerForm() {
                 className="neu-input"
                 type="text"
                 value={form.slNo}
-                readOnly
-                style={{ paddingLeft: '44px', fontWeight: 700, color: '#64748b', background: '#f8fafc', cursor: 'not-allowed' }}
+                onChange={(e) => setForm({ ...form, slNo: e.target.value })}
+                style={{ paddingLeft: '44px', fontWeight: 700, color: '#002560' }}
               />
             </div>
           </div>

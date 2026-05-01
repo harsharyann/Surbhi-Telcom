@@ -57,7 +57,7 @@ export function AppProvider({ children }) {
         accountNumber: r.account_number,
         mobileNumber: r.mobile_number,
         createdAt: r.created_at
-      }));
+      })).sort((a, b) => (parseInt(a.slNo) || 0) - (parseInt(b.slNo) || 0));
       setRecords(mappedRecords);
     } catch (err) {
       console.error('Error fetching data:', err.message);
@@ -74,6 +74,19 @@ export function AppProvider({ children }) {
       return false;
     }
     return true;
+  };
+
+  const adminGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + '/admin',
+      }
+    });
+    if (error) {
+      toast.error('Google Sign-In Error: ' + error.message);
+      return false;
+    }
   };
 
   const adminLogout = async () => {
@@ -111,7 +124,10 @@ export function AppProvider({ children }) {
         createdAt: data.created_at
       };
 
-      setRecords(prev => [mappedRecord, ...prev]);
+      setRecords(prev => {
+        const newRecords = [mappedRecord, ...prev];
+        return newRecords.sort((a, b) => (parseInt(a.slNo) || 0) - (parseInt(b.slNo) || 0));
+      });
       return mappedRecord;
     } catch (err) {
       toast.error('Failed to save record: ' + err.message);
@@ -148,7 +164,10 @@ export function AppProvider({ children }) {
         createdAt: r.created_at
       }));
 
-      setRecords(prev => [...mappedRecords, ...prev]);
+      setRecords(prev => {
+        const newRecords = [...mappedRecords, ...prev];
+        return newRecords.sort((a, b) => (parseInt(a.slNo) || 0) - (parseInt(b.slNo) || 0));
+      });
       return mappedRecords;
     } catch (err) {
       toast.error('Failed to import records: ' + err.message);
@@ -185,7 +204,10 @@ export function AppProvider({ children }) {
         createdAt: data.created_at
       };
 
-      setRecords(prev => prev.map(r => r.id === id ? mappedRecord : r));
+      setRecords(prev => {
+        const newRecords = prev.map(r => r.id === id ? mappedRecord : r);
+        return newRecords.sort((a, b) => (parseInt(a.slNo) || 0) - (parseInt(b.slNo) || 0));
+      });
       toast.success('Record updated');
       return true;
     } catch (err) {
@@ -223,7 +245,7 @@ export function AppProvider({ children }) {
   return (
     <AppContext.Provider value={{
       records, addRecord, addRecords, updateRecord, deleteRecord, clearAllRecords,
-      isAdminLoggedIn: !!user, adminLogin, adminLogout, loading, isConnected,
+      isAdminLoggedIn: !!user, adminLogin, adminGoogleLogin, adminLogout, loading, isConnected,
     }}>
       {children}
     </AppContext.Provider>
