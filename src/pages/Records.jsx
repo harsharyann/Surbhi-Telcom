@@ -21,7 +21,7 @@ export default function Records() {
       .join(' ')
       .toLowerCase()
       .includes(search.toLowerCase())
-  );
+  ).sort((a, b) => (parseInt(b.slNo) || 0) - (parseInt(a.slNo) || 0));
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
